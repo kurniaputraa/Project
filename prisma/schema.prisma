@@ -13,47 +13,89 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum UserRole {
+  ADMIN
+  REPORT
+  TECHNIC
+}
+
+model User {
+  id           String   @id @default(uuid())
+  email        String   @unique
+  password     String
+  role         UserRole
+  mobile_token String
+}
+
 model City {
-  id Int @id @default(autoincrement())
+  id   String @id @default(uuid())
   name String
-  odp ODP[]
-  odc ODC[]
-  jc JC[]
-  slack Slack[]
+
+  Line Line[]
 }
 
-model ODP {
-  id Int @id @default(autoincrement())
-  name String
-  latitude String
-  longitude String
-  cityId Int
-  city  City @relation(fields: [cityId], references: [id])
+model Line {
+  id        String @id @default(uuid())
+  name      String
+  possition Json
+  capacity  Int
+  cityId    String
+  City      City   @relation(fields: [cityId], references: [id])
+
+  Pole Pole[]
 }
 
-model ODC {
-  id Int @id @default(autoincrement())
-  name String
-  latitude String
+model Pole {
+  id        String @id @default(uuid())
+  name      String
+  latitude  String
   longitude String
-  cityId Int
-  city  City @relation(fields: [cityId], references: [id])
+  lineId    String
+  Line      Line   @relation(fields: [lineId], references: [id])
+  ODPId     String
+
+  odc   ODC[]
+  slack SLACK[]
+  jc    JC[]
 }
 
 model JC {
-  id Int @id @default(autoincrement())
-  name String
+  id       String @id @default(uuid())
+  name     String
   latitude String
-  longitude String
-  cityId Int
-  city  City @relation(fields: [cityId], references: [id])
+  longtude String
+  poleId   String
+  Pole   Pole   @relation(fields: [poleId], references: [id])
 }
 
-model Slack {
-   id Int @id @default(autoincrement())
-  name String
+model ODC {
+  id       String @id @default(uuid())
+  name     String
   latitude String
+  longtude String
+  poleId   String
+  Pole     Pole   @relation(fields: [poleId], references: [id])
+
+  odp ODP[]
+}
+
+model ODP {
+  id        String @id @default(uuid())
+  name      String
+  latitude  String
   longitude String
-  cityId Int
-  city  City @relation(fields: [cityId], references: [id])
+  capacity  Int
+  odcId     String
+  ODC       ODC    @relation(fields: [odcId], references: [id])
+}
+
+model SLACK {
+  id        String @id @default(uuid())
+  name      String
+  latitude  String
+  longitude String
+  capacity  Float
+  poleId    String
+
+  pole Pole @relation(fields: [poleId], references: [id])
 }

@@ -1,28 +1,56 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { CreateCityDto } from './dto/create-city.dto';
 import { UpdateCityDto } from './dto/update-city.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
 export class CityService {
-  constructor(private prisma: PrismaService) {}
-  create(createCityDto: CreateCityDto) {
-    return 'This action adds a new city';
+  constructor(private prismaService: PrismaService){}
+
+  async create(createCityDto: CreateCityDto) {
+    try {
+      return await this.prismaService.city.create({
+        data: createCityDto
+      })
+    } catch (error) {
+      throw new BadRequestException(error)
+    }
   }
 
-  findAll() {
-    return this.prisma.city.findMany;
+  async findAll() {
+    try {
+      return await this.prismaService.city.findMany()
+    } catch (error) {
+      throw new BadRequestException(error)
+    }
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} city`;
+  async findOne(id: string) {
+    try {
+      return await this.prismaService.city.findMany({where: {id: id}})
+    } catch (error) {
+      throw new BadRequestException(error)
+    }
   }
 
-  update(id: number, updateCityDto: UpdateCityDto) {
-    return `This action updates a #${id} city`;
+  async update(id: string, updateCityDto: UpdateCityDto) {
+    try {
+      return await this.prismaService.city.update({
+        data: updateCityDto,
+        where: {
+          id: id
+        }
+      })
+    } catch (error) {
+      throw new BadRequestException(error)
+    }
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} city`;
+  async remove(id: string) {
+    try {
+      return await this.prismaService.city.delete({where: {id: id}})
+    } catch (error) {
+      throw new BadRequestException(error)
+    }
   }
 }

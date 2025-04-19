@@ -1,8 +1,9 @@
-import { PartialType } from '@nestjs/mapped-types';
-import { CreateCityDto } from './create-city.dto';
-import { IsString } from 'class-validator';
+import { OmitType } from "@nestjs/mapped-types";
+import { CityEntity } from "../entities/city.entity";
+import { IsNotEmpty, IsString } from "class-validator";
 
-export class UpdateCityDto extends PartialType(CreateCityDto) {
-  @IsString()
-  name: string;
+export class UpdateCityDto extends OmitType(CityEntity, ['id']) {
+    @IsNotEmpty()
+    @IsString()
+    name: string;
 }

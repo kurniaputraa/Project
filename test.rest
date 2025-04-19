@@ -1,0 +1,13 @@
+###
+POST http://localhost:3000/city
+Content-Type: application/json
+
+{
+    "name" : "Jakarta"
+}
+
+###
+GET http://localhost:3000/city
+
+###
+DELETE http://localhost:3000/city/2
